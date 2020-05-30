@@ -1,0 +1,25 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "BOA",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aluno20235/TI2_ClientSide_Node_a20235A19072.git"
+  },
+  "author": "Aluno 20235 e Aluno 19072",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aluno20235/TI2_ClientSide_Node_a20235A19072/issues"
+  },
+  "homepage": "https://github.com/aluno20235/TI2_ClientSide_Node_a20235A19072#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}

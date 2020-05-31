@@ -1,4 +1,4 @@
-const db = require('../config/mongodb.js').getDB();
+const db = require('../configs/mongodb.js').getDB();
 const ObjectId = require('mongodb').ObjectID;
 
 exports.getGenres = () => {

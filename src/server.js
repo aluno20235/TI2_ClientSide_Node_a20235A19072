@@ -7,6 +7,7 @@ const bodyParser = require ('body-parser');
 const cors = require ('cors');
 
 const app = express ();
+
 const userRoutes = require ('./routes/user-route');
 const artistRoutes = require ('./routes/artist-route');
 const genreRoutes = require ('./routes/genre-route');

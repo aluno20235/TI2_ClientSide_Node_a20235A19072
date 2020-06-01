@@ -1,4 +1,4 @@
-require ('./configs/mongodb').connectDB()
+require ('./configs/mongodb').connectDB();
 
 // importação das dependências do servidor node
 // inicialização do express

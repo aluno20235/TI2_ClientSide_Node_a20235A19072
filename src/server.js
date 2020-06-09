@@ -27,7 +27,7 @@ app.use ('/album', albumRoutes);
 app.use ('/track', trackRoutes);
 
 //iniciar node server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 app.listen (port,() => {
     console.log (`\x1b[32m(PLAIN) Server listening on port ${port}\x1b[0m.`);
 });

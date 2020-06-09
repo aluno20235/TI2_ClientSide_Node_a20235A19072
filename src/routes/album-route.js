@@ -4,11 +4,14 @@ const AlbunsController = require ('../controllers/album-controller');
 
 const router=express.Router();
 
+const authorize = require('../configs/authorization');
+const roles = require('../helpers/roles.js');
+
 //define rotas
-router.get ('', AlbunsController.getAlbums);
-router.get ('/:id', AlbunsController.getAlbum);
-router.post ('', AlbunsController.postAlbum);
-router.put ('/:id', AlbunsController.putAlbum);
-router.delete ('/:id', AlbunsController.deleteAlbum);
+router.get ('', authorize(), AlbunsController.getAlbums);
+router.get ('/:id', authorize(), AlbunsController.getAlbum);
+router.post ('', authorize(roles.Contributor||roles.Admin),AlbunsController.postAlbum);
+router.put ('/:id', authorize(roles.Contributor||roles.Admin),AlbunsController.putAlbum);
+router.delete ('/:id', authorize(roles.Admin),AlbunsController.deleteAlbum);
 
 module.exports = router;

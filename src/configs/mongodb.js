@@ -1,6 +1,6 @@
 // const MongoClient = require('mongodb').MongoClient;
 
-/// const mongodb = new MongoClient('mongodb://localhost:27017');
+// const mongodb = new MongoClient('mongodb://localhost:27017');
 
 const MongoClient = require('mongodb').MongoClient 
   , Server = require('mongodb').Server;

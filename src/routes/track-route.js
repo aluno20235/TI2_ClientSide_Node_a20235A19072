@@ -4,11 +4,14 @@ const TracksController = require ('../controllers/track-controller');
 
 const router=express.Router();
 
+const authorize = require('../configs/authorization');
+const roles = require('../helpers/roles.js');
+
 //define rotas
-router.get ('', TracksController.getTracks);
-router.get ('/:id', TracksController.getTrack);
-router.post ('', TracksController.postTrack);
-router.put ('/:id', TracksController.putTrack);
-router.delete ('/:id', TracksController.deleteTrack);
+router.get ('',authorize() ,TracksController.getTracks);
+router.get ('/:id',authorize() ,TracksController.getTrack);
+router.post ('',authorize(roles.Contributor||roles.Admin) ,TracksController.postTrack);
+router.put ('/:id',authorize(roles.Contributor||roles.Admin) ,TracksController.putTrack);
+router.delete ('/:id',authorize(roles.Admin) ,TracksController.deleteTrack);
 
 module.exports = router;

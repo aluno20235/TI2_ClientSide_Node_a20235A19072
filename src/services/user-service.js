@@ -3,7 +3,7 @@ const ObjectId = require ('mongodb').ObjectID;
 const cipher = require("../helpers/cipher");
 const roles = require("../helpers/roles");
 
-exports.register = (username, rawPassword, role) => {
+exports.register = (username, rawPassword, role, email, name) => {
     return new Promise((resolve, reject) => {
       try {
         db.collection("users")
@@ -15,7 +15,7 @@ exports.register = (username, rawPassword, role) => {
                   const dataIv = cipher.generateIv();
                   const password = cipher.encrypt(rawPassword, dataIv);
                   db.collection("users")
-                    .insertOne({ username, password, role, dataIv})
+                    .insertOne({ username, password, role, email, name, dataIv})
                     .then(() => resolve())
                     .catch((error) => reject(error.message));
                 } else reject("invalid password");
@@ -43,3 +43,56 @@ exports.register = (username, rawPassword, role) => {
         .catch((error) => reject(error));
     });
   };
+
+  exports.getUser = () => {
+    return new Promise((resolve, reject) => {
+        db
+            .collection('users')
+            .find()
+            .project({ '_id': 1, 'username': 1, 'role': 1, 'email': 1, 'name': 1 })
+            .toArray()
+            .then(users => resolve(users))
+            .catch(err => reject(err));
+    });
+};
+
+exports.getUser = id => {
+    return new Promise((resolve, reject) => {
+        db
+            .collection('users')
+            .findOne({ _id: ObjectId(id) })
+            .then(user => resolve(user))
+            .catch(err => reject(err));
+    });
+};
+
+exports.updateUser = (id, body) => {
+    return new Promise((resolve, reject) => {
+        db
+            .collection('users')
+            .updateOne(
+                { _id: ObjectId(id) },
+                {
+                    $set: {
+                        role: body.role,
+                        email: body.email,
+                        name: body.name
+                    },
+                }
+            )
+            .then( () => resolve({ updated : 1 }))
+            .catch(err => reject(err));
+    });
+};
+
+exports.deleteUser = id => {
+    return new Promise((resolve, reject) => {
+        db
+        .collection('users')
+        .deletedOne(
+            { _id: ObjectId(id) },
+        )
+        .then( () => resolve({ removed: 1 }))
+        .catch(err => reject(err));
+    });
+};

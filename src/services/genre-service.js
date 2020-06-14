@@ -1,11 +1,15 @@
-const db = require('../configs/mongodb.js').getDB ();
+const db = require('../configs/mongodb.js').getDB();
 const ObjectId = require('mongodb').ObjectID;
 
-exports.getGenres = () => {
+exports.getGenres = (queryString) => {
     return new Promise((resolve, reject) => {
+        let filter = {};
+        if (queryString.search) {
+            filter.genre = { $regex: new RegExp(queryString.search, "i") };
+        }
         db
             .collection('genres')
-            .find()
+            .find(filter)
             .project({ '_id': 1, 'genre': 1 })
             .toArray()
             .then(genres => resolve(genres))
@@ -58,7 +62,7 @@ exports.deleteGenre = id => {
     return new Promise((resolve, reject) => {
         db
             .collection('genres')
-            .deletedOne(
+            .deleteOne(
                 { _id: ObjectId(id) },
             )
             .then(() => resolve({ removed: 1 }))

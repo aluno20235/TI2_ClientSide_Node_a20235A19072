@@ -1,11 +1,16 @@
 const db = require ('../configs/mongodb.js').getDB ();
+const store = require("../configs/minio.js");
 const ObjectId = require ('mongodb').ObjectID;
 
-exports.getArtists = () => {
+exports.getArtists = (queryString) => {
     return new Promise((resolve, reject) => {
+        let filter = {};
+        if (queryString.search) {
+          filter.artistname = { $regex: new RegExp(queryString.search, "i") };
+        }
         db
             .collection('artists')
-            .find()
+            .find(filter)
             .project({ '_id': 1, 'artistname': 1, 'photo': 1 })
             .toArray()
             .then(artists => resolve(artists))
@@ -23,21 +28,20 @@ exports.getArtist = id => {
     });
 };
 
-exports.addArtist = artist => {
+exports.addArtist = body => {
     return new Promise((resolve, reject) => {
         db
             .collection('artists')
             .insertOne({
                 artistname : body.artistname,
                 description : body.description,
-                photo : body.photo
             })
             .then(res => resolve({ inserted: 1, _id: res.insertedId }))
             .catch(err => reject(err));
     });
 };
 
-exports.updateArtist = (id, artist) => {
+exports.updateArtist = (id, body) => {
     return new Promise((resolve, reject) => {
         db
             .collection('artists')
@@ -47,7 +51,6 @@ exports.updateArtist = (id, artist) => {
                     $set: {
                         artistname : body.artistname,
                         description : body.description,
-                        photo : body.photo
                     },
                 }
             )
@@ -56,14 +59,38 @@ exports.updateArtist = (id, artist) => {
     });
 };
 
-exports.deleteArtist = id => {
+exports.deleteArtist = (id) => {
     return new Promise((resolve, reject) => {
         db
         .collection('artists')
-        .deletedOne(
+        .deleteOne(
             { _id: ObjectId(id) },
         )
         .then( () => resolve({ removed: 1 }))
         .catch(err => reject(err));
     });
 };
+
+exports.updateArtistPhoto = (id, file) => {
+    return new Promise((resolve, reject) => {
+      let url = "";
+      db.collection("artists")
+        .findOne({ _id: ObjectId(id) })
+        .then((artist) => {
+          let promises = [store.uploadFile(file.path, file.type)];
+          if (artist.photo) {
+            const aux = artist.photo.split("?")[0].split("/");
+            promises.push(store.removeFile(aux[aux.length - 1]));
+          }
+          return Promise.all(promises);
+        })
+        .then(([presignedUrl, deleted]) => {
+          url = presignedUrl;
+          return db.collection("artists").updateOne({ _id: ObjectId(id) }, { $set: { photo: presignedUrl } });
+        })
+        .then(() => {
+          resolve({ updated: 1, url });
+        })
+        .catch((err) => reject(err));
+    });
+  };

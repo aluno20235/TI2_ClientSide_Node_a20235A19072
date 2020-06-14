@@ -1,8 +1,9 @@
 const artistService = require('../services/artist-service');
+const formidable = require("formidable");
 
 exports.getArtists = (req, res) => {
     artistService
-        .getArtists()
+        .getArtists(req.query)
         .then(result => res.json(result))
         .catch(err => res.status(500).send(err.message));
 };
@@ -34,3 +35,16 @@ exports.deleteArtist = (req, res) => {
         .then(result => res.json(result))
         .catch(err => res.status(500).send(err.message));
 };
+
+exports.updateArtistCover = (req, res) => {
+    formidable().parse(req, (err, fields, files) => {
+      if (err) {
+        res.status(500).send(err.message);
+      } else {
+        artistService
+          .updateArtistCover(req.params.id, files.photo)
+          .then((result) => res.json(result))
+          .catch((err) => res.status(500).send(err.message));
+      }
+    });
+  };

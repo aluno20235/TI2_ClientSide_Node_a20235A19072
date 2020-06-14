@@ -8,10 +8,11 @@ const authorize = require('../configs/authorization');
 const roles = require('../helpers/roles.js');
 
 //define rotas
-router.get ('', authorize(),ArtistsController.getArtists);
-router.get ('/:id', authorize(),ArtistsController.getArtist);
-router.post ('', authorize(roles.Contributor||roles.Admin),ArtistsController.postArtist);
-router.put ('/:id',authorize(roles.Contributor||roles.Admin),ArtistsController.putArtist);
+router.get ('', ArtistsController.getArtists);
+router.get ('/:id', ArtistsController.getArtist);
+router.post ('', authorize(),ArtistsController.postArtist);
+router.put ('/data/:id',authorize(),ArtistsController.putArtist);
+router.put ('/photo/:id',authorize(),ArtistsController.updateArtistCover);
 router.delete ('/:id', authorize(roles.Admin),ArtistsController.deleteArtist);
 
 module.exports = router;

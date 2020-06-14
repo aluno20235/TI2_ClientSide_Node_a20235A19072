@@ -8,10 +8,10 @@ const authorize = require('../configs/authorization');
 const roles = require('../helpers/roles.js');
 
 //define rotas
-router.get ('', authorize(), AlbunsController.getAlbums);
-router.get ('/:id', authorize(), AlbunsController.getAlbum);
-router.post ('', authorize(roles.Contributor||roles.Admin),AlbunsController.postAlbum);
-router.put ('/:id', authorize(roles.Contributor||roles.Admin),AlbunsController.putAlbum);
+router.get ('', AlbunsController.getAlbums);
+router.get ('/:id', AlbunsController.getAlbum);
+router.post ('', authorize(),AlbunsController.postAlbum);
+router.put ('/:id', authorize(),AlbunsController.putAlbum);
 router.delete ('/:id', authorize(roles.Admin),AlbunsController.deleteAlbum);
 
 module.exports = router;

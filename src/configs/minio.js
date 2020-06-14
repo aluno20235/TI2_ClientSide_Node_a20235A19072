@@ -3,14 +3,15 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 var minioClient = new Minio.Client({
-  endPoint: process.env.MINIO_ENDPOINT,
-  port: parseInt(process.env.MINIO_PORT),
-  useSSL: process.env.MINIO_USESSL == "true",
-  accessKey: process.env.MINIO_ACCESSKEY,
-  secretKey: process.env.MINIO_SECRETKEY,
+  endPoint: "localhost",
+  port: 9000,
+  useSSL: false,
+  accessKey: "minioadmin",
+  secretKey: "minioadmin",
 });
 
-const bucket = "books";
+
+const bucket = "boa";
 
 const connectStorage = () => {
   return new Promise((resolve, reject) => {
@@ -37,7 +38,7 @@ const mimeTypes = {
 const uploadFile = (filePath, mimeType) => {
   return new Promise((resolve, reject) => {
     if (mimeTypes[mimeType]) {
-      const fileName = "cover/" + crypto.randomBytes(16).toString("hex") + mimeTypes[mimeType];
+      const fileName = crypto.randomBytes(16).toString("hex") + mimeTypes[mimeType];
       const fileStream = fs.createReadStream(filePath);
       minioClient
         .putObject(bucket, fileName, fileStream)

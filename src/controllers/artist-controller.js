@@ -36,13 +36,13 @@ exports.deleteArtist = (req, res) => {
         .catch(err => res.status(500).send(err.message));
 };
 
-exports.updateArtistCover = (req, res) => {
+exports.updateArtistPhoto = (req, res) => {
     formidable().parse(req, (err, fields, files) => {
       if (err) {
         res.status(500).send(err.message);
       } else {
         artistService
-          .updateArtistCover(req.params.id, files.photo)
+          .updateArtistPhoto(req.params.id, files.photo)
           .then((result) => res.json(result))
           .catch((err) => res.status(500).send(err.message));
       }

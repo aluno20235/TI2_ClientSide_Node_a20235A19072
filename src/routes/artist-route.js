@@ -12,7 +12,7 @@ router.get ('', ArtistsController.getArtists);
 router.get ('/:id', ArtistsController.getArtist);
 router.post ('', authorize(),ArtistsController.postArtist);
 router.put ('/data/:id',authorize(),ArtistsController.putArtist);
-router.put ('/photo/:id',authorize(),ArtistsController.updateArtistCover);
+router.put ('/photo/:id',authorize(),ArtistsController.updateArtistPhoto);
 router.delete ('/:id', authorize(roles.Admin),ArtistsController.deleteArtist);
 
 module.exports = router;

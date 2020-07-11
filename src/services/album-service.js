@@ -1,11 +1,16 @@
 const db = require('../configs/mongodb.js').getDB ();
+const store = require("../configs/minio.js");
 const ObjectId = require('mongodb').ObjectID;
 
-exports.getAlbuns = () => {
+exports.getAlbuns = (queryString) => {
     return new Promise((resolve, reject) => {
+        let filter = {};
+        if (queryString.search) {
+          filter.album = { $regex: new RegExp(queryString.search, "i") };
+        }
         db
             .collection('albuns')
-            .find()
+            .find(filter)
             .project({ '_id': 1, 'album': 1, 'genre': 1, 'cover': 1 })
             .toArray()
             .then(albuns => resolve(albuns))
@@ -32,7 +37,6 @@ exports.addAlbum = body => {
                 genre: body.genre,
                 year: body.year,
                 artist: body.artist,
-                cover: body.cover
             })
             .then(res => resolve({ inserted: 1, _id: res.insertedId }))
             .catch(err => reject(err));
@@ -51,7 +55,6 @@ exports.updateAlbum = (id, body) => {
                         genre: body.genre,
                         year: body.year,
                         artist: body.artist,
-                        cover: body.cover
                     },
                 }
             )
@@ -64,10 +67,37 @@ exports.deleteAlbum = id => {
     return new Promise((resolve, reject) => {
         db
         .collection('albuns')
-        .deletedOne(
+        .deleteOne(
             { _id: ObjectId(id) },
         )
         .then( () => resolve({ removed: 1 }))
         .catch(err => reject(err));
     });
 };
+
+exports.updateAlbumCover = (id, file) => {
+    console.log(id, file);
+    return new Promise((resolve, reject) => {
+      let url = "";
+      db.collection("albuns")
+        .findOne({ _id: ObjectId(id) })
+        .then((album) => {
+            console.log(album);
+          let promises = [store.uploadFile(file.path, file.type)];
+          if (album.cover) {
+            const aux = album.cover.split("?")[0].split("/");
+            promises.push(store.removeFile(aux[aux.length - 1]));
+          }
+          return Promise.all(promises);
+
+        })
+        .then(([presignedUrl, deleted]) => {
+          url = presignedUrl;
+          return db.collection("albuns").updateOne({ _id: ObjectId(id) }, { $set: { cover: presignedUrl } });
+        })
+        .then(() => {
+          resolve({ updated: 1, url });
+        })
+        .catch((err) => reject(err));
+    });
+  };

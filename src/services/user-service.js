@@ -44,11 +44,15 @@ exports.register = (username, rawPassword, role, email, name) => {
     });
   };
 
-  exports.getUser = () => {
+  exports.getUsers = (queryString) => {
     return new Promise((resolve, reject) => {
+      let filter = {};
+      if (queryString.search) {
+          filter.user = { $regex: new RegExp(queryString.search, "i") };
+      }
         db
             .collection('users')
-            .find()
+            .find(filter)
             .project({ '_id': 1, 'username': 1, 'role': 1, 'email': 1, 'name': 1 })
             .toArray()
             .then(users => resolve(users))
@@ -74,6 +78,7 @@ exports.updateUser = (id, body) => {
                 { _id: ObjectId(id) },
                 {
                     $set: {
+                        username: body.username,
                         role: body.role,
                         email: body.email,
                         name: body.name
@@ -89,10 +94,10 @@ exports.deleteUser = id => {
     return new Promise((resolve, reject) => {
         db
         .collection('users')
-        .deletedOne(
+        .deleteOne(
             { _id: ObjectId(id) },
         )
-        .then( () => resolve({ removed: 1 }))
+        .then(() => resolve({ removed: 1 }))
         .catch(err => reject(err));
     });
 };

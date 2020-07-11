@@ -74,11 +74,9 @@ exports.deleteArtist = (id) => {
 exports.updateArtistPhoto = (id, file) => {
     return new Promise((resolve, reject) => {
       let url = "";
-      console.log(id, file);
       db.collection("artists")
         .findOne({ _id: ObjectId(id) })
         .then((artist) => {
-            console.log(artist);
           let promises = [store.uploadFile(file.path, file.type)];
           if (artist.photo) {
             const aux = artist.photo.split("?")[0].split("/");

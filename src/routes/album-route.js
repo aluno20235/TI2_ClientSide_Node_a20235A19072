@@ -11,7 +11,8 @@ const roles = require('../helpers/roles.js');
 router.get ('', AlbunsController.getAlbums);
 router.get ('/:id', AlbunsController.getAlbum);
 router.post ('', authorize(),AlbunsController.postAlbum);
-router.put ('/:id', authorize(),AlbunsController.putAlbum);
+router.put ('/data/:id', authorize(),AlbunsController.putAlbum);
+router.put ('/cover/:id', authorize(),AlbunsController.updateAlbumCover);
 router.delete ('/:id', authorize(roles.Admin),AlbunsController.deleteAlbum);
 
 module.exports = router;

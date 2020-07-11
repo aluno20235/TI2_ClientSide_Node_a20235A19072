@@ -79,25 +79,19 @@ exports.updateAlbumCover = (id, file) => {
     console.log(id, file);
     return new Promise((resolve, reject) => {
       let url = "";
-      console.log(id, file);
       db.collection("albuns")
         .findOne({ _id: ObjectId(id) })
         .then((album) => {
             console.log(album);
           let promises = [store.uploadFile(file.path, file.type)];
-          console.log(promises);
-          console.log(album.cover);
           if (album.cover) {
             const aux = album.cover.split("?")[0].split("/");
-            console.log(aux);
             promises.push(store.removeFile(aux[aux.length - 1]));
           }
-          console.log(promises);
           return Promise.all(promises);
 
         })
         .then(([presignedUrl, deleted]) => {
-            console.log(presignedUrl);
           url = presignedUrl;
           return db.collection("albuns").updateOne({ _id: ObjectId(id) }, { $set: { cover: presignedUrl } });
         })

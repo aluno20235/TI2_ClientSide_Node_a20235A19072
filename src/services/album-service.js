@@ -11,7 +11,7 @@ exports.getAlbuns = (queryString) => {
         db
             .collection('albuns')
             .find(filter)
-            .project({ '_id': 1, 'album': 1, 'genre': 1, 'cover': 1 })
+            .project({ '_id': 1, 'album': 1, 'genre': 1, 'artist':1, 'cover': 1 })
             .toArray()
             .then(albuns => resolve(albuns))
             .catch(err => reject(err));

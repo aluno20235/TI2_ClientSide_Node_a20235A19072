@@ -1,4 +1,5 @@
 Promise.all([
+    require("dotenv").config(),
     require('./configs/mongodb').connectDB(),
     require('./configs/minio').connectStorage(),
 ])

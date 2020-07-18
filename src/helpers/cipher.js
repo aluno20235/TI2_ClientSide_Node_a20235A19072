@@ -1,5 +1,5 @@
 const crypto = require ('crypto');
-const key = 'p9mjBkWTQXDMHx5EiKrXjVPcokwRzqvA';
+const key = process.env.CYPHER_KEY;
 
 exports.generateIv = () => {
     return crypto.randomBytes(8).toString('hex');

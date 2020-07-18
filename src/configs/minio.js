@@ -3,11 +3,11 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 var minioClient = new Minio.Client({
-  endPoint: "localhost",
-  port: 9000,
-  useSSL: false,
-  accessKey: "minioadmin",
-  secretKey: "minioadmin",
+  endPoint: process.env.MINIO_ENDPOINT,
+  port: parseInt(process.env.MINIO_PORT),
+  useSSL: process.env.MINIO_USESSL == "true",
+  accessKey: process.env.MINIO_ACCESSKEY,
+  secretKey: process.env.MINIO_SECRETKEY,
 });
 
 

@@ -76,13 +76,11 @@ exports.deleteAlbum = id => {
 };
 
 exports.updateAlbumCover = (id, file) => {
-    console.log(id, file);
     return new Promise((resolve, reject) => {
       let url = "";
       db.collection("albuns")
         .findOne({ _id: ObjectId(id) })
         .then((album) => {
-            console.log(album);
           let promises = [store.uploadFile(file.path, file.type)];
           if (album.cover) {
             const aux = album.cover.split("?")[0].split("/");

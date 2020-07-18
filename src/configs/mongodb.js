@@ -1,11 +1,11 @@
-// const MongoClient = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 
-// const mongodb = new MongoClient('mongodb://localhost:27017');
+const mongodb = new MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true});
 
-const MongoClient = require('mongodb').MongoClient 
-  , Server = require('mongodb').Server;
+// const MongoClient = require('mongodb').MongoClient 
+//   , Server = require('mongodb').Server;
 
-const mongodb = new MongoClient(new Server('localhost', 27017));
+// const mongodb = new MongoClient(new Server(process.env.MONGO_SERVER, process.env.MONGO_PORT));
 
 const connectDB = () => {
   return new Promise ((resolve, reject) => {
